@@ -1,0 +1,15 @@
+-------------------------Setting up project structure---------------------------
+
+1. Create repo, clone it in local
+2. Create & Activate the virtual environment
+
+   # To get the path of python.exe file,
+   python -c "import sys; print(sys.executable)"
+   C:\Users\sandeep.d\AppData\Local\Programs\Python\Python313\python.exe
+   C:\Users\sandeep.d\AppData\Local\Programs\Python\Python313\python.exe -m venv capstone
+   .\capstone\Scripts\Activate
+
+3. pip install cookiecutter
+4. cookiecutter -c v1 https://github.com/drivendata/cookiecutter-data-science
+5. Rename src.models -> src.model
+6. git add - commit - push
