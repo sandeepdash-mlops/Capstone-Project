@@ -1,15 +1,30 @@
 -------------------------Setting up project structure---------------------------
 
 1. Create repo, clone it in local
-2. Create & Activate the virtual environment
+2. Install dependencies, Create & Activate the virtual environment
 
-   # To get the path of python.exe file,
-   python -c "import sys; print(sys.executable)"
-   C:\Users\sandeep.d\AppData\Local\Programs\Python\Python313\python.exe
-   C:\Users\sandeep.d\AppData\Local\Programs\Python\Python313\python.exe -m venv capstone
-   .\capstone\Scripts\Activate
+   winget source update
+   winget install --id Python.Python.3.11 --source winget
+   py -3.11 --version
+   py -3.11 -m venv capstone
+   .\capstone\Scripts\activate
+   pip install mlflow==2.14.3
+   mlflow --version (Use MLflow version 2.2.2. to log model in Dagshub) 
 
 3. pip install cookiecutter
 4. cookiecutter -c v1 https://github.com/drivendata/cookiecutter-data-science
 5. Rename src.models -> src.model
 6. git add - commit - push
+
+-------------------------Setup MLFlow on Dagshub---------------------------
+7. Go to: https://dagshub.com/dashboard
+8. Create > New Repo > Connect a repo > (Github) Connect > Select your repo > Connect
+9. Copy experiment tracking url and code snippet. (Also try: Go To MLFlow UI)
+10. pip install dagshub & mlflow=2.2.2
+
+11. Run the exp notebooks
+12. git add - commit - push
+
+13. dvc init
+14. create a local folder as "local_s3" (temporary work)
+15. on terminal - "dvc remote add -d mylocal local_s3"
