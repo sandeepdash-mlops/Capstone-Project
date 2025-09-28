@@ -9,8 +9,6 @@ import yaml
 import logging
 from src.logger import logging
 from src.connections import s3_connection
-# access_key = os.getenv("AWS_ACCESS_KEY_ID")
-# secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 def load_params(params_path: str) -> dict:
     """Load parameters from a YAML file."""
@@ -76,11 +74,9 @@ def main():
         test_size = params['data_ingestion']['test_size']
         # test_size = 0.2
         
-        # df = load_data(data_url='https://raw.githubusercontent.com/sandeepdash-mlops/Datasets/refs/heads/main/data.csv')
-        # s3 = s3_connection.s3_operations("bucketname", access_key, secret_key)
+        df = load_data(data_url='https://raw.githubusercontent.com/sandeepdash-mlops/Datasets/refs/heads/main/data.csv')
+        # s3 = s3_connection.s3_operations("bucket-name", "accesskey", "secretkey")
         # df = s3.fetch_file_from_s3("data.csv")
-
-
 
         final_df = preprocess_data(df)
         train_data, test_data = train_test_split(final_df, test_size=test_size, random_state=42)
