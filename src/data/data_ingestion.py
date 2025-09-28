@@ -76,7 +76,7 @@ def main():
         # test_size = 0.2
         
         df = load_data(data_url='https://raw.githubusercontent.com/sandeepdash-mlops/Datasets/refs/heads/main/data.csv')
-        # s3 = s3_connection.s3_operations("capstonedata043", "AKIASNR34ECRGNQMLWGN", "C+aQAheIxkL+JLAmVsLsw5hMuupQs/MW6OlM64pF")
+        # s3 = s3_connection.s3_operations("bucketname", "accesskey", "secretkey")
         # df = s3.fetch_file_from_s3("data.csv")
 
 
