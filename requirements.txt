@@ -94,8 +94,8 @@ Markdown
 MarkupSafe
 marshmallow
 matplotlib
-mlflow==2.2.2
-mlflow-skinny
+mlflow==2.15.0
+mlflow-skinny==2.15.0
 multidict
 mypy-extensions
 networkx

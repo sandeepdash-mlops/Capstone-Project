@@ -9,7 +9,7 @@
    py -3.11 -m venv capstone
    .\capstone\Scripts\activate
    pip install mlflow==2.14.3
-   mlflow --version (Use MLflow version 2.2.2. to log model in Dagshub) 
+   mlflow --version (Use MLflow version 2.15.0. to log model in Dagshub) 
 
 3. pip install cookiecutter
 4. cookiecutter -c v1 https://github.com/drivendata/cookiecutter-data-science
@@ -20,7 +20,7 @@
 7. Go to: https://dagshub.com/dashboard
 8. Create > New Repo > Connect a repo > (Github) Connect > Select your repo > Connect
 9. Copy experiment tracking url and code snippet. (Also try: Go To MLFlow UI)
-10. pip install dagshub & mlflow=2.2.2
+10. pip install dagshub & mlflow=2.15.0
 
 11. Run the exp notebooks
 12. git add - commit - push
@@ -56,5 +56,7 @@
 30. Add .github/workflows/ci.yaml file
 
 31. Create key token on Dagshub for auth: Go to dagshub repo > Your settings > Tokens > Generate new token
-    >> Please make sure to save token << >> capstone_test: 54b1d67648a9b1267ef906fsdfsd8b292f779f0<<
+    >> Please make sure to save token << >> Capstone proj: dbdaabe47ad9fa72546d1d7b470a99397e9a2fb7<<
     >> Add this auth token to github secret&var and update on ci file
+
+32. Add dir "tests"&"scripts" and files within. This will contain our test related scripts for CI.
