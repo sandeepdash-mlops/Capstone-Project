@@ -39,7 +39,7 @@
     - register_model.py
 17. add file - dvc.yaml (till model evaluation.metrics)
 18. add file - params.yaml
-29. DVC pipeline is ready to run - dvc repro
+19. DVC pipeline is ready to run - dvc repro
 20. Once do - dvc status
 21. git add - commit - push
 
@@ -60,3 +60,15 @@
     >> Add this auth token to github secret&var and update on ci file
 
 32. Add dir "tests"&"scripts" and files within. This will contain our test related scripts for CI.
+
+>>>>> Moving to Docker <<<<<
+33. pip install pipreqs
+34. cd flask_app & do "pipreqs . --force"
+35. Add dockerfile and start docker-desktop in background
+    Also before proceeding make sure: [switch the mlflow server setup to param version, change cmd on dockerfile]
+36. go to root dir and: "docker build -t capstone-app:latest ."
+37. Try running the image: "docker run -p 8888:5000 capstone-app:latest"
+    - This run will give 'OSError: capstone_test environment variable is not set'...obviously
+    - alternate: docker run -p 8888:5000 -e CAPSTONE_TEST=54b1d67648a9b1267ef906fsdfsd8b292f779f0 capstone-app:latest
+    - docker push youruser/capstone-app:latest (optional)
+    - optional: try to delete image locally and pull it from dockerhub and run (optional)
