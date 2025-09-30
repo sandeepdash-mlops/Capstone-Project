@@ -27,6 +27,13 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: pull data from DVC remote
+        env:
+          DAGSHUB_USER: <your-username>
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          dvc pull
+          
       - name: run pipeline
         env:
           CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
