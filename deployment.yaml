@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flask-app
-        image: 166555558050.dkr.ecr.us-east-1.amazonaws.com/capstone-proj:latest
+        image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}@${{ env.IMAGE_DIGEST }}
         ports:
         - containerPort: 5000
         resources:
