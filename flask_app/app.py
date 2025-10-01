@@ -67,29 +67,6 @@ def normalize_text(text):
 
     return text
 
-# ------------------- DagsHub + MLflow setup for local -------------------
-
-# Make sure you have exported your token:
-# export DAGSHUB_TOKEN=<your_personal_access_token>
-
-#CAPSTONE_TEST = os.environ.get("CAPSTONE_TEST")
-#if not CAPSTONE_TEST:
-#    raise ValueError("CAPSTONE_TEST environment variable is not set.")
-
-# Authenticate with DagsHub using the token
-#dagshub.auth.add_app_token(token=CAPSTONE_TEST)
-
-# Initialize DagsHub repo integration with MLflow
-#dagshub.init(
-#    repo_owner='sandeepdash-mlops',
-#    repo_name='Capstone-Project',
-#    mlflow=True
-#)
-
-# Set MLflow tracking URI to DagsHub
-#mlflow.set_tracking_uri('https://dagshub.com/sandeepdash-mlops/Capstone-Project.mlflow')
-
-# -------------------------------------------------------------------------------------
 # Below code block is for production use
 # -------------------------------------------------------------------------------------
 # Set up DagsHub credentials for MLflow tracking
@@ -106,6 +83,28 @@ repo_name = "Capstone-Project"
 
 # # Set up MLflow tracking URI
 mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+# -------------------------------------------------------------------------------------
+
+# ------------------- DagsHub + MLflow setup for local -------------------
+
+# Make sure you have exported your token:
+# export CAPSTONE_TEST=3eb44e9da22d11030e3099850bd61b204d7ed185
+#CAPSTONE_TEST = os.environ.get("CAPSTONE_TEST")
+#if not CAPSTONE_TEST:
+#    raise ValueError("CAPSTONE_TEST environment variable is not set.")
+
+# Authenticate with DagsHub using the token
+#dagshub.auth.add_app_token(token=CAPSTONE_TEST)
+
+# Initialize DagsHub repo integration with MLflow
+#dagshub.init(
+#    repo_owner='sandeepdash-mlops',
+#    repo_name='Capstone-Project',
+#    mlflow=True
+#)
+
+# Set MLflow tracking URI to DagsHub
+#mlflow.set_tracking_uri('https://dagshub.com/sandeepdash-mlops/Capstone-Project.mlflow')
 # -------------------------------------------------------------------------------------
 
 
@@ -133,7 +132,7 @@ PREDICTION_COUNT = Counter(
 model_name = "my_model"
 def get_latest_model_version(model_name):
     client = mlflow.MlflowClient()
-    latest_version = client.get_latest_versions(model_name, stages=["Staging"])
+    latest_version = client.get_latest_versions(model_name, stages=["Production"])
     if not latest_version:
         latest_version = client.get_latest_versions(model_name, stages=["None"])
     return latest_version[0].version if latest_version else None
