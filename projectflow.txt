@@ -27,7 +27,7 @@
 
 13. dvc init
 14. create a local folder as "local_s3" (temporary work)
-15. on terminal - "dvc remote add -d mylocal local_s3"
+15. on terminal - "dvc remote add -d mylocal local_s3" and do "pip install -r requirements.txt"
 
 16. Add code to below files/folders inside src dir:
     - logger
@@ -56,7 +56,7 @@
 30. Add .github/workflows/ci.yaml file
 
 31. Create key token on Dagshub for auth: Go to dagshub repo > Your settings > Tokens > Generate new token
-    >> Please make sure to save token << >> Capstone proj: fa7d5d9652cebe2aa3742805f8295f4ac26e2e21<<
+    >> Please make sure to save token << >> Capstone proj: 3eb44e9da22d11030e3099850bd61b204d7ed185<<
     >> Add this auth token to github secret&var and update on ci file
 
 32. Add dir "tests"&"scripts" and files within. This will contain our test related scripts for CI.
