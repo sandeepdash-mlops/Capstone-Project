@@ -1,5 +1,12 @@
-from flask import Flask, render_template, request
+import os
+
+# Must be set before importing mlflow
+os.environ["MLFLOW_TRACKING_URI"] = "https://dagshub.com/sandeepdash-mlops/Capstone-Project.mlflow"
+os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("CAPSTONE_TEST")
+os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("CAPSTONE_TEST")
+
 import mlflow
+from flask import Flask, render_template, request
 import pickle
 import os
 import pandas as pd
