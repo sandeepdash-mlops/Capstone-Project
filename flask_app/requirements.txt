@@ -1,10 +1,12 @@
 dagshub
 Flask
-mlflow==2.15.0
-mlflow_skinny
+mlflow==2.19.0
+mlflow_skinny==2.19.0
 nltk
 numpy==1.26.4
 pandas==2.3.2
-psutil==7.1.0
-pyarrow==15.0.2
 prometheus_client
+cloudpickle==2.2.1
+psutil==7.1.0
+pyarrow==11.0.0
+scipy==1.16.2

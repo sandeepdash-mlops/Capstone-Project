@@ -69,7 +69,7 @@
 36. go to root dir and: "docker build -t capstone-app:latest ."
 37. Try running the image: "docker run -p 8888:5000 capstone-app:latest"
     - This run will give 'OSError: capstone_test environment variable is not set'...obviously
-    - alternate: docker run -p 8888:5000 -e CAPSTONE_TEST=fa7d5d9652cebe2aa3742805f8295f4ac26e2e21 capstone-app:latest
+    - alternate: docker run -p 8888:5000 -e CAPSTONE_TEST=3eb44e9da22d11030e3099850bd61b204d7ed185 capstone-app:latest
     - docker push youruser/capstone-app:latest (optional)
     - optional: try to delete image locally and pull it from dockerhub and run (optional)
 

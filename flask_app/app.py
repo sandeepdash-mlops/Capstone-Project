@@ -71,38 +71,41 @@ def normalize_text(text):
 
 # Make sure you have exported your token:
 # export DAGSHUB_TOKEN=<your_personal_access_token>
-DAGSHUB_TOKEN = os.environ.get("DAGSHUB_TOKEN")
-if not DAGSHUB_TOKEN:
-    raise ValueError("DAGSHUB_TOKEN environment variable is not set.")
+
+#CAPSTONE_TEST = os.environ.get("CAPSTONE_TEST")
+#if not CAPSTONE_TEST:
+#    raise ValueError("CAPSTONE_TEST environment variable is not set.")
 
 # Authenticate with DagsHub using the token
-dagshub.auth.add_app_token(token=DAGSHUB_TOKEN)
+#dagshub.auth.add_app_token(token=CAPSTONE_TEST)
 
 # Initialize DagsHub repo integration with MLflow
-dagshub.init(
-    repo_owner='sandeepdash-mlops',
-    repo_name='Capstone-Project',
-    mlflow=True
-)
+#dagshub.init(
+#    repo_owner='sandeepdash-mlops',
+#    repo_name='Capstone-Project',
+#    mlflow=True
+#)
 
 # Set MLflow tracking URI to DagsHub
-mlflow.set_tracking_uri('https://dagshub.com/sandeepdash-mlops/Capstone-Project.mlflow')
+#mlflow.set_tracking_uri('https://dagshub.com/sandeepdash-mlops/Capstone-Project.mlflow')
 
+# -------------------------------------------------------------------------------------
 # Below code block is for production use
 # -------------------------------------------------------------------------------------
 # Set up DagsHub credentials for MLflow tracking
-#dagshub_token = os.getenv("CAPSTONE_TEST")
-#if not dagshub_token:
-#    raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
+dagshub_token = os.getenv("CAPSTONE_TEST")
+if not dagshub_token:
+    raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
 
-#os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-#os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-#dagshub_url = "https://dagshub.com"
-#repo_owner = "sandeepdash-mlops"
-#repo_name = "Capstone-Project"
+dagshub_url = "https://dagshub.com"
+repo_owner = "sandeepdash-mlops"
+repo_name = "Capstone-Project"
+
 # # Set up MLflow tracking URI
-#mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 # -------------------------------------------------------------------------------------
 
 
