@@ -1,13 +1,17 @@
 -------------------------Setting up project structure---------------------------
 
-1. Create repo, clone it in local
+1. Create repo, clone it in ubuntu:24.04
 2. Install dependencies, Create & Activate the virtual environment
+   sudo apt update
+   sudo apt install software-properties-common -y
+   sudo add-apt-repository ppa:deadsnakes/ppa -y
+   sudo apt update
+   sudo apt install python3.11 python3.11-venv python3.11-dev -y
 
-   winget source update
-   winget install --id Python.Python.3.11 --source winget
-   py -3.11 --version
-   py -3.11 -m venv capstone
-   .\capstone\Scripts\activate
+   python3.11 -m venv venv
+   source venv/bin/activate
+   python --version
+
    pip install mlflow==2.14.3
    mlflow --version (Use MLflow version 2.15.0. to log model in Dagshub) 
 
@@ -274,7 +278,6 @@ sudo apt update && sudo apt upgrade -y
     click - Save and Test | Get started with building dashboards.
 
 
-
 ----------------------------------------------------------------------------------
 
 AWS Resource Cleanup:
@@ -327,9 +330,3 @@ Why Relevant?: AWS imposes a limit on the number of Fleet Requests per account. 
 
 ----------------------------------------------------------------------------------
 
-What is a PVC?
-1. PVC (PersistentVolumeClaim) is a request for storage by a Kubernetes application. It is bound to a PV (PersistentVolume), which is the actual storage resource.
-2. PVCs use StorageClasses to define how the volume should be provisioned (e.g., EBS volumes on AWS, NFS, etc.).
-3. When a pod is deployed and needs storage, it will request the storage defined in the PVC.
-
-----------------------------------------------------------------------------------
