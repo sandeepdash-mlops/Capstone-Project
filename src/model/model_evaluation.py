@@ -13,13 +13,13 @@ from src.logger import logging
 # ------------------- DagsHub + MLflow setup for local -------------------
 
 # Make sure you have exported your token:
-# export DAGSHUB_TOKEN=<your_personal_access_token>
-DAGSHUB_TOKEN = os.environ.get("DAGSHUB_TOKEN")
-if not DAGSHUB_TOKEN:
-    raise ValueError("DAGSHUB_TOKEN environment variable is not set.")
+# export CAPSTONE_TEST=3eb44e9da22d11030e3099850bd61b204d7ed185
+CAPSTONE_TEST = os.environ.get("CAPSTONE_TEST")
+if not CAPSTONE_TEST:
+    raise ValueError("CAPSTONE_TEST environment variable is not set.")
 
 # Authenticate with DagsHub using the token
-dagshub.auth.add_app_token(token=DAGSHUB_TOKEN)
+dagshub.auth.add_app_token(token=CAPSTONE_TEST)
 
 # Initialize DagsHub repo integration with MLflow
 dagshub.init(
