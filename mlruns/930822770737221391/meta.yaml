@@ -1,0 +1,6 @@
+artifact_location: file:///root/Capstone-Project/mlruns/930822770737221391
+creation_time: 1759314261083
+experiment_id: '930822770737221391'
+last_update_time: 1759314261083
+lifecycle_stage: active
+name: my-dvc-pipeline
