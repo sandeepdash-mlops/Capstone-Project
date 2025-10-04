@@ -1,5 +1,5 @@
 ````markdown
-# 🎬 Movie Review Sentiment Analysis – MLOps Capstone Project
+# 🎬 Sentiment Analysis – MLOps Capstone Project
 
 - Status: Production-ready
 - Python: 3.11
