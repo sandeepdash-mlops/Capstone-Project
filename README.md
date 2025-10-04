@@ -13,7 +13,7 @@
 
 ## 🚀 Project Description
 
-This project addresses a **text classification problem** under supervised machine learning. The goal is to predict the **sentiment of movie reviews**, classifying them as **positive** or **negative**.
+This project tackles a **text classification problem** using supervised machine learning. The goal is to predict the **sentiment of movie reviews**, classifying each review as **positive** or **negative**.
 
 It demonstrates an **end-to-end MLOps pipeline** including:
 
