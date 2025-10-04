@@ -217,5 +217,3 @@ If you found this project helpful or have any questions, feel free to reach out!
 ---
 
 This capstone demonstrates the ability to build, deploy, monitor, and scale ML applications in a production environment, combining modern MLOps practices with cloud-native deployment, autoscaling, and ML no. of inference/prediction with observability solutions. It involves building a supervised machine learning model to classify reviews as positive or negative and deploying it in a production-ready, scalable environment.
-
-```
