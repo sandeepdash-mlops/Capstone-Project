@@ -400,20 +400,20 @@ B. Enabling sidecar through deployment annotation
     Step-3.2: With watch mode-
 
     watch -n 2 "curl -sG 'http://34.93.74.61:8080/api/v1/query' \
-  --data-urlencode 'query=sum(rate(istio_requests_total{job=\"flask-app\"}[15s]))' \
-  | jq '.data.result[0].value[1]'"
+    --data-urlencode 'query=sum(rate(istio_requests_total{job=\"flask-app\"}[15s]))' \
+    | jq '.data.result[0].value[1]'"
 
-    Step-3.3: If you want structured JSON output pod each pod inference threshold utilization for respective window-
-
-    watch -n 2 "curl -sG 'http://34.93.74.61:8080/api/v1/query' \
-  --data-urlencode 'query=sum by (pod) (rate(istio_requests_total{job=\"flask-app\"}[30s]))' \
-  | jq '.data.result[] | {pod: .metric.pod, rps: (.value[1] | tonumber)}'"
-
-    Step-3.4: If You want a Tabular Watch View for a cleaner table-like output-
+    Step-3.3: Structured JSON per pod (Shows RPS per pod)
 
     watch -n 2 "curl -sG 'http://34.93.74.61:8080/api/v1/query' \
-  --data-urlencode 'query=sum by (pod) (rate(istio_requests_total{job=\"flask-app\"}[30s]))' \
-  | jq -r '.data.result[] | \"\(.metric.pod)\t\(.value[1])\"' | column -t"
+    --data-urlencode 'query=sum by (pod) (rate(istio_requests_total{job=\"flask-app\"}[30s]))' \
+    | jq '.data.result[] | {pod: .metric.pod, rps: (.value[1] | tonumber)}'"
+
+    Step-3.4: Tabular watch view
+
+    watch -n 2 "curl -sG 'http://34.93.74.61:8080/api/v1/query' \
+    --data-urlencode 'query=sum by (pod) (rate(istio_requests_total{job=\"flask-app\"}[30s]))' \
+    | jq -r '.data.result[] | \"\(.metric.pod)\t\(.value[1])\"' | column -t"
 
     Step: 4:
 
