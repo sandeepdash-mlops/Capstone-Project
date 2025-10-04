@@ -415,7 +415,7 @@ B. Enabling sidecar through deployment annotation
     --data-urlencode 'query=sum by (pod) (rate(istio_requests_total{job=\"flask-app\"}[30s]))' \
     | jq -r '.data.result[] | \"\(.metric.pod)\t\(.value[1])\"' | column -t"
 
-    Step: 4:
+    Step-4:
 
     Finally, scaledobject trigger section, query looks like now..
 
