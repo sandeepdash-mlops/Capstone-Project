@@ -424,7 +424,7 @@ B. Enabling sidecar through deployment annotation
         query: sum(rate(istio_requests_total{job="flask-app-service"}[15s]))
 
 
-61. Putting all togethere we can visualize through Grafana dashboard, how traffic trends for prediction, scaling events and      all going on.
+61. Putting all together we can visualize through Grafana dashboard, how traffic trends for prediction, scaling events and      all going on.
 
     Use the query for creating dashboard in grafana, that we have check earlier in prometheus or we can customize as per the     requirement.
 
