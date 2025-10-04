@@ -337,6 +337,11 @@ Application integration for observability and custom K8's Event-Driven scaling (
 
 61. Getting metrics from Istio's sidecar:
 
+A. By labeling namespace with sidecar enabled, command 
+   kubectl label namespace ippb-stage istio-injection=enabled
+
+B. Enabling sidecar through deployment annotation
+
     >> Alternatively, if we are using a service mesh solution like Istio in our cluster, we can get, by default, basic top-level metrics by enabling sidecar in deployment/namespace label - such as istio_requests_total, istio_request_duration_milliseconds_bucket (histogram), istio_request_duration_milliseconds_sum, and istio_request_duration_milliseconds_count.
        which we have integrated in our code with - "app_request_count", "app_request_latency_seconds" by enabling Istio's sidecar.
     >> To get model_prediction_count (positive vs negative predictions), we still need app-level instrumentation, because Istio cannot inspect your ML model’s output.
@@ -386,11 +391,29 @@ Application integration for observability and custom K8's Event-Driven scaling (
         interval: 15s
         path: /stats/prometheus
 
-    Step-3.1: Test with Prometheus query
+    Step-3.1: Test with Prometheus query-
 
     curl -G 'http://34.93.74.61:8080/api/v1/query' --data-urlencode 'query=sum(rate(istio_requests_total{job="flask-app"}[2m]))' | jq '.data.result[0].value[1]'
 
     If you get "null", it usually means Prometheus cannot scrape the endpoint, or ServiceMonitor labels don’t match. This must retun "0".
+
+    Step-3.2: With watch mode-
+
+    watch -n 2 "curl -sG 'http://34.93.74.61:8080/api/v1/query' \
+  --data-urlencode 'query=sum(rate(istio_requests_total{job=\"flask-app\"}[15s]))' \
+  | jq '.data.result[0].value[1]'"
+
+    Step-3.3: If you want structured JSON output pod each pod inference threshold utilization for respective window-
+
+    watch -n 2 "curl -sG 'http://34.93.74.61:8080/api/v1/query' \
+  --data-urlencode 'query=sum by (pod) (rate(istio_requests_total{job=\"flask-app\"}[30s]))' \
+  | jq '.data.result[] | {pod: .metric.pod, rps: (.value[1] | tonumber)}'"
+
+    Step-3.4: If You want a Tabular Watch View for a cleaner table-like output-
+
+    watch -n 2 "curl -sG 'http://34.93.74.61:8080/api/v1/query' \
+  --data-urlencode 'query=sum by (pod) (rate(istio_requests_total{job=\"flask-app\"}[30s]))' \
+  | jq -r '.data.result[] | \"\(.metric.pod)\t\(.value[1])\"' | column -t"
 
     Step: 4:
 
@@ -432,22 +455,6 @@ Application integration for observability and custom K8's Event-Driven scaling (
     >> The average number of requests per second (over the last 2 minutes) that completed the /predict endpoint in 0.5 seconds or less.
     >> Essentially, it tells you how many requests were fast, which is useful for latency-based scaling or performance dashboards.
 
-
-
-
-
-----------------------------------------------------------------------------------
-
-AWS Resource Cleanup:
-
-* Delete deployment - kubectl delete deployment flask-app
-* Delete service - kubectl delete service flask-app-service
-* Delete env var - kubectl delete secret capstone-secret
-* Delete EKS Cluster - eksctl delete cluster --name flask-app-cluster --region us-east-1
-* Verify Cluster Deletion - eksctl get cluster --region us-east-1
-* Delete artifacts of ECR and S3 (optional - delete ECR and S3)
-* Validate if Cloud Formation stacks are deleted.
-* Confirm service termination on AWS support chat.
 
 
 
