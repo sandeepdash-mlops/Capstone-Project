@@ -1,10 +1,11 @@
 ````markdown
 # 🎬 Sentiment Analysis – MLOps Capstone Project
+**End-to-end development, deployment, scalable inference, and observability of model performance**
 
 - Status: Production-ready
 - Python: 3.11
-- Docker: Containerized
-- Kubernetes: EKS
+- Docker: Containerization
+- Kubernetes: EKS (Orchestration)
 - MLFlow: Experiment Tracking
 - DVC: Pipeline & Versioning
 
