@@ -4,10 +4,10 @@
 
 - Status: Production-ready
 - Python: 3.11
+- DVC: Pipeline & Versioning
+- MLFlow: Experiment Tracking
 - Docker: Containerization
 - Kubernetes: EKS (Orchestration)
-- MLFlow: Experiment Tracking
-- DVC: Pipeline & Versioning
 
 ---
 
