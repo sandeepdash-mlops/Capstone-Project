@@ -270,7 +270,7 @@ Application integration for observability and custom K8's Event-Driven scaling (
     helm install keda kedacore/keda --namespace keda --create-namespace
     kubectl get pods -n keda
 
-60. It is possible to scale applications proactively using PredictKube.
+59. It is possible to scale applications proactively using PredictKube.
     Unlike KEDA’s reactive scaling, PredictKube uses historical metrics to predict future load and scale your deployment before a spike happens.
 
     >> Trigger Specification defined in predictkube.yaml:
@@ -335,7 +335,7 @@ Application integration for observability and custom K8's Event-Driven scaling (
 
     Now you can look at how scaling works at a graph in your visualization tool with Grafana Dashboard.
 
-61. Getting metrics from Istio's sidecar:
+60. Getting metrics from Istio's sidecar:
 
 A. By labeling namespace with sidecar enabled, command 
    kubectl label namespace ippb-stage istio-injection=enabled
@@ -424,9 +424,9 @@ B. Enabling sidecar through deployment annotation
         query: sum(rate(istio_requests_total{job="flask-app-service"}[15s]))
 
 
-62. Putting all togethere we can visualize through Grafana dashboard, how traffic trends for prediction, scaling events and all going on.
+61. Putting all togethere we can visualize through Grafana dashboard, how traffic trends for prediction, scaling events and      all going on.
 
-    Use the query for creating dashboard in grafana, that we have check earlier in prometheus or we can customize as per the requirement.
+    Use the query for creating dashboard in grafana, that we have check earlier in prometheus or we can customize as per the     requirement.
 
     Query we have used in scaledobject:
 
