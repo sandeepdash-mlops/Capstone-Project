@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: flask-app-sm
+  namespace: default
+  labels:
+    release: stable  # bydefault release name is the chart name of prometheus 
+spec:
+  selector:
+    matchLabels:
+      svc: flask-app-service   # Field should be application service label not deployment label itself. 
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: app-port              
+      path: /metrics
+      interval: 10s
+      scrapeTimeout: 15s
+      scheme: http

@@ -1,3 +1,7 @@
+-------------------------Project Description (Capstone Project)---------------------------
+
+In this project, we address a text classification problem under supervised machine learning, where the goal is to predict the sentiment of movie reviews. Specifically, the application is sentiment analysis, classifying reviews as either positive or negative.
+
 -------------------------Setting up project structure---------------------------
 
 1. Create repo, clone it in ubuntu:24.04
@@ -12,9 +16,6 @@
    source venv/bin/activate
    python --version
 
-   pip install mlflow==2.14.3
-   mlflow --version (Use MLflow version 2.15.0. to log model in Dagshub) 
-
 3. pip install cookiecutter
 4. cookiecutter -c v1 https://github.com/drivendata/cookiecutter-data-science
 5. Rename src.models -> src.model
@@ -24,14 +25,14 @@
 7. Go to: https://dagshub.com/dashboard
 8. Create > New Repo > Connect a repo > (Github) Connect > Select your repo > Connect
 9. Copy experiment tracking url and code snippet. (Also try: Go To MLFlow UI)
-10. pip install dagshub & mlflow=2.15.0
+10. pip install dagshub & mlflow
 
 11. Run the exp notebooks
 12. git add - commit - push
 
 13. dvc init
 14. create a local folder as "local_s3" (temporary work)
-15. on terminal - "dvc remote add -d mylocal local_s3" and do "pip install -r requirements.txt"
+15. on terminal - "dvc remote add -d mylocal local_s3" - "pip install -r requirements.txt"
 
 16. Add code to below files/folders inside src dir:
     - logger
@@ -82,8 +83,8 @@
 	AWS_SECRET_ACCESS_KEY
 	AWS_REGION
 	ECR_REPOSITORY (capstone-proj)
-        AWS_ACCOUNT_ID
-   (Also add this permission to the IAM user: AmazonEC2ContainerRegistryFullAccess)
+  AWS_ACCOUNT_ID
+  (Also add this permission to the IAM user: AmazonEC2ContainerRegistryFullAccess)
 
 39. Execute CICD pipeline till the stage where we build and push image to ECR.
 
@@ -92,8 +93,6 @@
 ----------------------------------------------------------------------------------
 *********Setup required before moving to EKS deployment*********
 ----------------------------------------------------------------------------------
-Setting up aws-cli:
-
 Os-spec-
 
 PRETTY_NAME="Ubuntu 24.04.3 LTS"
@@ -116,7 +115,6 @@ unzip awscliv2.zip
 sudo ./aws/install
 aws --version
 ----------------------------------------------------------------------------------
-
 Setting up kubectl:
 
 kubectl is officially distributed by Kubernetes.
@@ -139,9 +137,7 @@ sudo apt-get update -y
 sudo apt-get install -y kubectl
 
 kubectl version --client
-
 ----------------------------------------------------------------------------------
-
 Setting up eksctl:
 
 eksctl is the official CLI for Amazon EKS (from Weaveworks).
@@ -154,7 +150,6 @@ curl --silent --location "https://github.com/eksctl-io/eksctl/releases/latest/do
 sudo mv /tmp/eksctl /usr/local/bin
 
 eksctl version
-
 ----------------------------------------------------------------------------------
 * Verify AWS CLI: aws --version
 * Verify kubectl: kubectl version --client
@@ -162,10 +157,10 @@ eksctl version
 ----------------------------------------------------------------------------------
 
 40. Create an EKS cluster:
-    eksctl create cluster --name flask-app-cluster --region us-east-1 --nodegroup-name flask-app-nodes --node-type t3.small --nodes 1 --nodes-min 1 --nodes-max 1 --managed
+    eksctl create cluster --name flask-app-cluster --region us-east-1 --nodegroup-name flask-app-nodes --node-type t3.small --nodes 1 --nodes-min 2 --nodes-max 8 --managed
 
 41. Update kubectl Config(Once the cluster is created, eksctl will automatically update your kubectl config file. However, you can verify and set it manually using:)
-aws eks --region us-east-1 update-kubeconfig --name flask-app-cluster (This ensures your kubectl is pointing to the correct cluster.)
+    aws eks --region us-east-1 update-kubeconfig --name flask-app-cluster (This ensures your kubectl is pointing to the correct cluster.)
 
 42. Check EKS Cluster Configuration Ensure you can access your EKS cluster by running
     aws eks list-clusters
@@ -198,84 +193,247 @@ kubectl get svc
 49. Once the LoadBalancer service is up, get the external IP:
 kubectl get svc flask-app-service
 
-50. Try externa-ip:5000 directly on url or on terminal : curl http://external-ip:5000
+50. Try external-ip:5000 directly on url or on terminal : curl http://external-ip:5000
 curl http://a6bf6255d5f61470c9782b8955c98271-1409247973.us-east-1.elb.amazonaws.com:5000
 
 
 
 
+>>>>>>>>>> Observability Setup (Prometheus, Grafana) <<<<<<<<<<
 
 
->>>>>>>>>> Prometheus Server Setup <<<<<<<<<<
+51. helm repo add stable https://charts.helm.sh/stable
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm search repo prometheus-community
 
-51. Launch an Ubuntu EC2 Instance for Prometheus: t3.medium,  20GB of disk space (general-purpose SSD), Security Group: Allow inbound access on ports: 9090 for Prometheus Web UI, 22 for SSH access
+    kubectl create ns observability
+    helm install stable prometheus-community/kube-prometheus-stack -n observability
 
-52. SSH into the EC2 Instance(optional or connect directly to ec2 server alternatively):
-ssh -i your-key.pem ubuntu@your-ec2-public-ip
+52. Make sure all applications & services related to kube-prometheus-stack is up & running inside observability namespace:
+    kubectl get po -n observability
+    kubectl get svc -n observability
+    kubectl get all -n observability
 
-53. Update packages: sudo apt update && sudo apt upgrade -y
+53. If you want to expose Prometheus service stable-kube-prometheus-sta-prometheus with type LoadBalancer to access it from ouside cluster:
 
-54. Download Prometheus:
-wget https://github.com/prometheus/prometheus/releases/download/v2.46.0/prometheus-2.46.0.linux-amd64.tar.gz
-tar -xvzf prometheus-2.46.0.linux-amd64.tar.gz
-mv prometheus-2.46.0.linux-amd64 prometheus
+    kubectl edit svc stable-kube-prometheus-sta-prometheus -n monitoring
 
-55. Move files to standard paths:
-sudo mv prometheus /etc/prometheus
-sudo mv /etc/prometheus/prometheus /usr/local/bin/
+      selector:
+        app.kubernetes.io/name: prometheus
+        operator.prometheus.io/name: stable-kube-prometheus-stack-prometheus
+      sessionAffinity: None
+      type: LoadBalancer
+    status:
+      loadBalancer: {}
 
-56. Create Prometheus Configuration: 
->> Open the file for editing: sudo nano /etc/prometheus/prometheus.yml
->> Edit the File:
+54. If you want to expose Grafana service as well for outside world:
 
-global:
-  scrape_interval: 15s
+    kubectl edit svc stable-grafana -n monitoring
+      
+      selector:
+        app.kubernetes.io/instance: stable
+        app.kubernetes.io/name: grafana
+      sessionAffinity: None
+      type: LoadBalancer
+    status:
+      loadBalancer: {}
 
-scrape_configs:
-  - job_name: "flask-app"
-    static_configs:
-      - targets: ["a6bf6255d5f61470c9782b8955c98271-1409247973.us-east-1.elb.amazonaws.com:5000"]  # Replace with your app's External IP
+    Note: Make sure port 9090 and 3000 enable in EKS firewall. (securitygroup)
 
+55. Open Grafana web UI: http://<grafana-svc-lb-ip>:3000 (username/pass - admin, prom-operator)
 
-
->> Save the File: ctrl+o -> enter -> ctrl+x
->> Verify the Changes: cat /etc/prometheus/prometheus.yml
-
-57. Locate the Prometheus Binary(Run the following command to find where the prometheus executable is installed):
-which prometheus
-This should return the full path to the prometheus binary, such as /usr/local/bin/Prometheus
-
-58. Run Prometheus with the config file:
-/usr/local/bin/prometheus --config.file=/etc/prometheus/prometheus.yml
-
-
-
-
->>>>>>>>>> Grafana Server Setup <<<<<<<<<<
-
-59. Launch an Ubuntu EC2 Instance for Grafana: t3.medium,  20GB of disk space (general-purpose SSD), Security Group: Allow inbound access on ports: 3000 for Grafana Web UI, 22 for SSH access
-
-60. SSH into the EC2 Instance(optional or connect directly to ec2 server alternatively):
-ssh -i your-key.pem ubuntu@your-ec2-public-ip
-
-61. Update and upgrade system packages:
-sudo apt update && sudo apt upgrade -y
-
-62. Download Grafana: wget https://dl.grafana.com/oss/release/grafana_10.1.5_amd64.deb
-(this is a stable version for now; adjust the link if necessary.)
-
-63. Install Grafana: sudo apt install ./grafana_10.1.5_amd64.deb -y
-
-64. Start the Grafana service: sudo systemctl start grafana-server
-
-65. Enable Grafana to start on boot: sudo systemctl enable grafana-server
-
-66. Verify the service is running: sudo systemctl status grafana-server
-
-67. Open Grafana web UI: http://<ec2-public-ip>:3000 (username/pass - admin)
-
-68. Add Prometheus as a Data Source: http://54.81.71.206/:9090
+56. Add Prometheus as a Data Source: http://54.81.71.206:8080
     click - Save and Test | Get started with building dashboards.
+
+>>>>>>>>>>
+Application integration for observability and custom K8's Event-Driven scaling (KEDA) with AI-based predictive scaling based on Prometheus metrics & PredictKube SaaS. 
+(Such as- no. of inference, model prediction count, request latency)
+<<<<<<<<<<
+
+
+57. Create a service monitor to scrape target for prometheus dynamically.
+
+58. Create a scaledobject along with servicemonitor. (Reactive)
+
+    we have created scaledobject.yaml
+    Note: If you don't have keda install in your cluster, then setup it by using following steps.
+
+    Installing...
+
+    A. To deploy KEDA using Helm, first add the official KEDA Helm repository:
+
+    helm repo add kedacore https://kedacore.github.io/charts  
+    helm repo update
+
+    B. Install keda by running:
+
+    helm install keda kedacore/keda --namespace keda --create-namespace
+    kubectl get pods -n keda
+
+60. It is possible to scale applications proactively using PredictKube.
+    Unlike KEDA’s reactive scaling, PredictKube uses historical metrics to predict future load and scale your deployment before a spike happens.
+
+    >> Trigger Specification defined in predictkube.yaml:
+    >> This specification describes the predictkube trigger that scales based on a predicting load based on prometheus metrics.
+    >> Instead of waiting for load to increase, it uses historical metrics to predict future load and scales your deployment proactively.
+    >> PredictKube is not built into KEDA core, but it is available as an external scaler. That means you don’t install a separate CRD/operator—just enable it via API key and TriggerAuthentication.
+    >> After you can use predictube as an external trigger type in scaledobject.
+    >> PredictKube handles predicted traffic ahead of time. predicts traffic in the future, while KEDA reacts to real-time spikes.
+    >> Benefits of combining both:
+       Predictive scaling avoids slowdowns before spikes
+       Reactive scaling handles unexpected traffic bursts
+    >> They both scale the same Deployment, but using different strategies.
+
+    KEDA = “Watch the current traffic. If too many inferences, open another tunnel.”
+    PredictKube = “Look at traffic patterns over the past week and predict traffic in 2 hours. Open tunnel before the queue event starts.”
+
+    How does PredictKube work?
+
+    >> PredictKube works in two parts:
+
+    * On the KEDA side The interface connects via API to the data sources about your traffic. PredictKube uses Prometheus—the industry standard for storing metrics. There, it anonymizes the data about the traffic on the client’s side before sending it to the API, where the model then works with information that is completely impersonal.
+    * On the AI model side Next, it is linked with a prediction mechanism—the AI model starts to get data about things that happen in your cloud project. Unlike standard rules-based algorithms such as Horizontal Pod Autoscaling (HPA), PredictKube uses Machine Learning models for time series data predicting, like CPU or RPS metrics.
+
+    >> PredictKube, a solution that can be used as a KEDA scaler that is responsible for resource balancing, and an AI model that has learned to react proactively to patterns of traffic activity, to help with both in-time scaling and solving the problem of overprovision.
+    >> The more data you can provide to it from the start, the more precise the prediction will be. The 2+ weeks data will be enough for the beginning.
+    >> The rest is up to you! You can visualize the trend of prediction in, for example, Grafana.
+
+    >> Launch of predictkube:
+
+    * Install KEDA
+    * Get PredictKube API Key 
+    * Go to the PredictKube website
+    * Register to get the API key in your email
+    * Create PredictKube Credentials secret​
+
+    https://keda.sh/docs/2.17/scalers/predictkube/
+    https://keda.sh/blog/2022-02-09-predictkube-scaler/
+    Navigate to the official PredictKube website: https://predictkube.com
+
+    * How to Obtain a PredictKube API Key
+    * Visit the PredictKube Website:
+
+    >> Register for an API Key:
+    * On the homepage, look for a "Get API Key" button or a similar call to action.
+    * Click on it to open the registration form.
+    * Fill in the required details, which typically include your name, email address, and possibly your organization.
+    * Receive the API Key:
+    * After submitting the form, you should receive an email containing your unique PredictKube API key.
+
+    >> Using the API Key in K8's:
+    * Once you have the API key, you can use it to authenticate with the PredictKube scaler in your Kubernetes environment:
+    * Create a Kubernetes Secret:
+    * Store your API key in a Kubernetes secret to securely reference it in your configurations.
+
+    kubectl create secret generic predictkube-secrets --from-literal=apiKey=${API_KEY}
+
+    Configure Predict Autoscaling​ by defining Trigger Authentication resource to use the API key for authentication and a scaledobject with external trigger type predictkube.
+    checkout predictkube.yaml file:
+
+    kubectl get scaledobject flask-app-predictive-so
+    kubectl get hpa | grep flask-app-predictive-so
+
+    Now you can look at how scaling works at a graph in your visualization tool with Grafana Dashboard.
+
+61. Getting metrics from Istio's sidecar:
+
+    >> Alternatively, if we are using a service mesh solution like Istio in our cluster, we can get, by default, basic top-level metrics by enabling sidecar in deployment/namespace label - such as istio_requests_total, istio_request_duration_milliseconds_bucket (histogram), istio_request_duration_milliseconds_sum, and istio_request_duration_milliseconds_count.
+       which we have integrated in our code with - "app_request_count", "app_request_latency_seconds" by enabling Istio's sidecar.
+    >> To get model_prediction_count (positive vs negative predictions), we still need app-level instrumentation, because Istio cannot inspect your ML model’s output.
+    >> Istio’s sidecar only knows about network traffic (HTTP/TCP/gRPC), not about our application’s internal logic.
+    >> Prometheus scrapes that endpoint → gets values split by prediction="positive" / "negative". Istio’s sidecar cannot generate this metric because:
+       * It doesn’t parse or inspect your business logic output
+       * It doesn’t know our ML model categories
+
+    We only can do through Istio's sidecar,
+
+    * For traffic-based predictive scaling → Use Istio metrics (istio_requests_total, istio_request_duration_milliseconds).
+    * For business-based predictive scaling (like number of positive vs negative predictions) → We still need custom Prometheus metrics from app.
+
+    Steps to enable app metrics through sidecar:
+
+    Step-1:
+
+    enable sidecar injection in deployment manifest annotation.
+
+    template:
+      metadata:
+        annotations:
+          sidecar.istio.io/inject: "true"
+        creationTimestamp: null
+
+    Step-2:
+
+    Sidecar expose /metrics at port 15020, so expose it with labels in deployment's service manifest.
+
+    metadata:
+      labels:
+        app: flask-app-service
+    spec:
+      - name: keda
+        port: 15020
+        protocol: TCP
+        targetPort: 15020
+
+    Step-3:
+
+    Create a servicemonitor 
+    Correct that the port: in the ServiceMonitor must match the service port name.
+    Correct path is /stats/prometheus for Istio metrics.
+
+    endpoints:
+      - port: keda
+        interval: 15s
+        path: /stats/prometheus
+
+    Step-3.1: Test with Prometheus query
+
+    curl -G 'http://34.93.74.61:8080/api/v1/query' --data-urlencode 'query=sum(rate(istio_requests_total{job="flask-app"}[2m]))' | jq '.data.result[0].value[1]'
+
+    If you get "null", it usually means Prometheus cannot scrape the endpoint, or ServiceMonitor labels don’t match. This must retun "0".
+
+    Step: 4:
+
+    Finally, scaledobject trigger section, query looks like now..
+
+    triggers:
+    - metadata:
+        query: sum(rate(istio_requests_total{job="flask-app-service"}[15s]))
+
+
+62. Putting all togethere we can visualize through Grafana dashboard, how traffic trends for prediction, scaling events and all going on.
+
+    Use the query for creating dashboard in grafana, that we have check earlier in prometheus or we can customize as per the requirement.
+
+    Query we have used in scaledobject:
+
+    sum(rate(model_prediction_count_total{job="flask-app-service"}[15s]))
+    sum(rate(app_request_count_total{endpoint="/", method="GET"}[40s]))
+    sum(rate(model_prediction_count_total{prediction="0", service="flask-app-service"}[5s])) 
+    sum(rate(model_prediction_count_total{prediction="1", namespace="default", service="flask-app-service"}[2m])) 
+    sum(rate(app_request_latency_seconds_total{endpoint="/predict"}[2m]))
+    sum(rate(app_request_latency_seconds_count{endpoint="/predict"}[2m]))
+    sum(rate(app_request_count_total{endpoint="/predict", method="POST"}[2m]))
+
+    Query we have used for dashboard to visualize in grafana:
+
+    sum(model_prediction_count_total{service=~"$service"})
+    >> This will show total request comes to service till pod started
+
+    sum(rate(app_request_latency_seconds_total{service=~"$service"}[$window]))
+    >> This will return average threshold count of specific interval
+
+    sum(rate(app_request_count_total{service=~"$service"}[$window])) by (pod)
+    >> This will return average value for each pod
+    >> Created time-series graph using the above query based on telmetry data
+
+    sum(rate(app_request_latency_seconds_bucket{endpoint="/predict", le="0.5", service="flask-app-service"}[2m]))
+    >> This is a Prometheus histogram metric that counts how many requests fell into specific latency ranges.
+    >> The average number of requests per second (over the last 2 minutes) that completed the /predict endpoint in 0.5 seconds or less.
+    >> Essentially, it tells you how many requests were fast, which is useful for latency-based scaling or performance dashboards.
+
+
+
 
 
 ----------------------------------------------------------------------------------
@@ -326,7 +484,6 @@ Fleet Requests
 Definition: A Fleet Request is an AWS internal process for provisioning EC2 instances. When creating a NodeGroup, EKS uses an Auto Scaling Group (ASG) to request EC2 instances, which count as Fleet Requests.
 
 Why Relevant?: AWS imposes a limit on the number of Fleet Requests per account. If your account exceeds this limit (e.g., due to other active ASGs or EKS clusters), NodeGroup creation fails with the error "You’ve reached your quota for maximum Fleet Requests".
-----------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------
 

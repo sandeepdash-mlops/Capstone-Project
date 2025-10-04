@@ -1,0 +1,42 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: keda-trigger-auth-predictkube-secret
+spec:
+  secretTargetRef:
+  - parameter: apiKey
+    name: predictkube-secrets
+    key: apiKey
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: flask-app-predictive-so
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: flask-app
+  minReplicaCount: 1
+  maxReplicaCount: 16
+  pollingInterval: 120    # in seconds (matches your KEDA pollingInterval: 2 -> 2s? adjust if needed)
+  cooldownPeriod: 300     # seconds, same as your KEDA cooldownPeriod
+  advanced:
+    restoreToOriginalReplicaCount: true
+    scalingModifiers: {}
+  triggers:
+    - type: predictkube
+      metadata:
+        # Required AI-predictive scaling fields
+        predictHorizon: "2h"                   # how far ahead to predict
+        historyTimeWindow: "7d"                # how much historical data to use
+        prometheusAddress: "http://98.80.13.12:9090"   # your Prometheus server
+        query: sum(rate(model_prediction_count_total{job="flask-app-service"}[15s]))  # same as your KEDA query
+        queryStep: "2m"                        # step to sample Prometheus data
+        threshold: "100.50"                     # desired predicted metric value to scale
+        activationThreshold: "50.1"            # minimum value to trigger scaling
+      metricType: Value  # Value or AverageValue Note: metricType will not work if you use fallback.
+      name: eventdriven
+      authenticationRef:
+        name: keda-trigger-auth-predictkube-secret

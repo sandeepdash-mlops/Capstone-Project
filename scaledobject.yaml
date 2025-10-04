@@ -30,12 +30,13 @@ spec:
   triggers:
   - metadata:
       ignoreNullValues: "true"
-      query: sum(rate(model_prediction_count_created{job="flask-app-service"}[15s]))
+      query: sum(rate(model_prediction_count_total{job="flask-app-service"}[15s]))
         #query: sum(rate(app_request_count_total{endpoint="/", method="GET"}[40s]))
-        #query: sum(rate(model_prediction_count_total{job="flask-app-service"}[1m]))
-        #query: sum(rate(app_request_latency_seconds_created{endpoint="/predict"}[2m]))
+        #query: sum(rate(model_prediction_count_total{prediction="0", service="flask-app-service"}[5s])) 
+        #query: sum(rate(model_prediction_count_total{prediction="1", namespace="default", service="flask-app-service"}[2m])) 
+        #query: sum(rate(app_request_latency_seconds_total{endpoint="/predict"}[2m]))
         #query: sum(rate(app_request_latency_seconds_count{endpoint="/predict"}[2m]))
-        #query: sum(rate(app_request_count_created{endpoint="/", method="POST"}[2m]))
+        #query: sum(rate(app_request_count_total{endpoint="/predict", method="POST"}[2m]))
       serverAddress: http://98.80.13.12:9090/
       threshold: "100.50"
     metricType: Value  # Value or AverageValue Note: metricType will not work if you use fallback.
