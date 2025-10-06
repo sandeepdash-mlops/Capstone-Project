@@ -6,7 +6,7 @@
 - Python: 3.11
 - DVC: Pipeline & Versioning
 - MLFlow: Experiment Tracking
-- Docker: Containerization
+- CRI (Docker): Containerization
 - Kubernetes: EKS (Orchestration)
 
 ---
