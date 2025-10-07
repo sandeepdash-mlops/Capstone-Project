@@ -4,6 +4,7 @@
 
 - Status: Production-ready
 - Python: 3.11
+- ML Framework: Scikit-Learn
 - DVC: Pipeline & Versioning
 - MLFlow: Experiment Tracking
 - CRI (Docker): Containerization
