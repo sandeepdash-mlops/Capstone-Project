@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1a1a3a,100:7c3aed&height=220&section=header&text=Sentiment-Analysis&fontSize=75&fontColor=ffffff&fontAlignY=38&desc=End-to-End%20MLOps%20Pipeline%20%7C%20Train%20%E2%86%92%20Deploy%20%E2%86%92%20Scale%20%E2%86%92%20Observe&descAlignY=60&descSize=20&descColor=c4b5fd" alt="Sentiment MLOps Banner"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1a1a3a,100:7c3aed&height=220&section=header&text=Sentiment-Analysis&fontSize=75&fontColor=ffffff&fontAlignY=38&desc=End-to-End%20MLOps%20Pipeline%20%7C%20Train%20%E2%86%92%20Deploy%20%E2%86%92%20Scale%20%E2%86%92%20Observe&descAlignY=61&descSize=20&descColor=c4b5fd" alt="Sentiment MLOps Banner"/>
 
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
