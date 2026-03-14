@@ -210,8 +210,6 @@ curl http://<external-ip>:5000
 If you found this project helpful or have any questions, feel free to reach out!
 
 
-📱 Phone: (+91) 7008-62-6663
-
 📧 Email: sandeepdashmlops@gmail.com
 
 💻 GitHub: https://github.com/sandeepdash-mlops
