@@ -456,6 +456,11 @@ B. Enabling sidecar through deployment annotation
     >> Essentially, it tells you how many requests were fast, which is useful for latency-based scaling or performance dashboards.
 
 
+NOTE:
+
+IF YOU ARE USING CILIUM THEN BY USING "huuble-metrics" BY ENABLING P7 TO INTERCEPT HTTP TRAFFIC IN CILIUM CONFIG, YOU CAN TRACE NO. OF REST CALL PER SERVICES. SO IN THIS CASE YOU NO NEED TO USE SIDECAR CONTAINER.
+
+
 
 
 
