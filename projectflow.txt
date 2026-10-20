@@ -175,6 +175,34 @@ eksctl version
     aws eks --region us-east-1 describe-cluster --name flask-app-cluster --query "cluster.status"
 
 
+NOTE:
+
+If you are using AWS CloudShell, then execute this with your user. Here we did create capstone user, to authenticate EKS with used creds.
+
+aws eks create-access-entry --cluster-name flask-app-cluster --region us-east-1 --principal-arn arn:aws:iam::166555558050:user/capstone
+
+aws eks associate-access-policy --cluster-name flask-app-cluster --region us-east-1 --principal-arn arn:aws:iam::166555558050:user/capstone --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy --access-scope type=cluster
+
+Once set, verify with
+
+aws eks list-access-entries --cluster-name flask-app-cluster --region us-east-1
+
+O/p-
+
+[k8s: flask-app-cluster] ~ $ aws eks list-access-entries --cluster-name flask-app-cluster --region us-east-1
+{
+    "accessEntries": [
+        "arn:aws:iam::166555558050:role/aws-service-role/eks.amazonaws.com/AWSServiceRoleForAmazonEKS",
+        "arn:aws:iam::166555558050:role/eksctl-flask-app-cluster-nodegroup-NodeInstanceRole-GyaHaIYQTqAa",
+        "arn:aws:iam::166555558050:root",
+        "arn:aws:iam::166555558050:user/capstone"
+    ]
+}
+[k8s: flask-app-cluster] ~ $ 
+
+"capstone" user now authenticated. Now you can re-run Job.
+
+
 45. Check cluster connectivity:
 kubectl get nodes
 
@@ -458,7 +486,9 @@ B. Enabling sidecar through deployment annotation
 
 NOTE:
 
-IF YOU ARE USING CILIUM THEN BY USING "huuble-metrics" BY ENABLING P7 TO INTERCEPT HTTP TRAFFIC IN CILIUM CONFIG, YOU CAN TRACE NO. OF REST CALL PER SERVICES. SO IN THIS CASE YOU NO NEED TO USE SIDECAR CONTAINER.
+IF YOU ARE USING CILIUM THEN BY USING "huuble-metrics" BY ENABLING L7 TO INTERCEPT HTTP TRAFFIC IN CILIUM CONFIG, YOU CAN TRACE NO. OF REST CALL PER SERVICES. SO IN THIS CASE YOU NO NEED TO USE SIDECAR CONTAINER.
+
+Also you can use vmsingle VictoriaMetrics instead of kube-prometheus-stack for light weight, to use PromScaler. 
 
 
 
